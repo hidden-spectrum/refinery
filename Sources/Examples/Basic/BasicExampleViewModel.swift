@@ -21,13 +21,8 @@ extension BasicExampleView {
         // MARK: Lifecycle
         
         init() {
-            self.refinery = Refinery(store: store) {
-                SelectRefiner("State", storeKey: \BasicStore.state, mode: .single) {
-                    for option in Self.stateOptions {
-                        RefinerOption(option, value: option)
-                    }
-                }
-                .hidden()
+            self.refinery = Refinery(title: "Basic REfinery", store: &store) {
+                BoolNode()
             }
         }
     }
