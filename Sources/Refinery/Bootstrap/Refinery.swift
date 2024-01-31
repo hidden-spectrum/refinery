@@ -2,16 +2,18 @@
 //  Copyright © 2024 Hidden Spectrum, LLC.
 //
 
+import SwiftUI
 
-public final class Refinery<Store: RefineryStore> {
+
+public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Public
     
     public let store: Store
     
-    // MARK: Private
+    // MARK: Internal
     
-    private let refiners: [Refiner<Store>]
+    let refiners: [Refiner<Store>]
     
     // MARK: Lifecycle
     

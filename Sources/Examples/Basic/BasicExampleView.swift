@@ -10,12 +10,19 @@ struct BasicExampleView: View {
     
     // MARK: Private
     
+    @State private var displayRefinery = false
+    
     @StateObject private var viewModel = ViewModel()
     
     // MARK: View
     
     var body: some View {
-        Text("Hello, World!")
+        Button("Show Refinery") {
+            displayRefinery.toggle()
+        }
+        .popover(isPresented: $displayRefinery, content: {
+            RefineryView(with: viewModel.refinery)
+        })
     }
 }
 

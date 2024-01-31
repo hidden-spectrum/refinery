@@ -11,20 +11,22 @@ public class Refiner<Store: RefineryStore> {
 
     // MARK: Internal
     
-    var value: String?
+    let displayText: String
+    let options: [RefinerOption]
     
     // MARK: Internal private(set)
     
     private(set) var hide: Bool = false
+    private(set) var value: String?
 
     // MARK: Private
     
-    private let options: [RefinerOption]
     private let storeKey: WritableKeyPath<Store, String?>
 
     // MARK: Lifecycle
 
-    init(storeKey: WritableKeyPath<Store, String?>, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
+    init(_ displayText: String, storeKey: WritableKeyPath<Store, String?>, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
+        self.displayText = displayText
         self.options = options()
         self.storeKey = storeKey
     }
@@ -35,4 +37,8 @@ public class Refiner<Store: RefineryStore> {
         hide = true
         return self
     }
+}
+
+extension Refiner: Identifiable {
+    public var id: Int { storeKey.hashValue }
 }

@@ -5,7 +5,7 @@
 import Foundation
 
 
-public class SelectRefiner<Store: RefineryStore>: Refiner<Store> {
+public final class SelectRefiner<Store: RefineryStore>: Refiner<Store> {
 
     // MARK: Public
     
@@ -22,8 +22,8 @@ public class SelectRefiner<Store: RefineryStore>: Refiner<Store> {
 
     // MARK: Lifecycle
 
-    public init(storeKey: WritableKeyPath<Store, String?>, mode: Mode, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
+    public init(_ displayText: String, storeKey: WritableKeyPath<Store, String?>, mode: Mode, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
         self.mode = mode
-        super.init(storeKey: storeKey, options)
+        super.init(displayText, storeKey: storeKey, options)
     }
 }

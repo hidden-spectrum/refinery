@@ -4,6 +4,7 @@
 
 import Foundation
 import Refinery
+import SwiftUI
 
 
 extension BasicExampleView {
@@ -21,7 +22,7 @@ extension BasicExampleView {
         
         init() {
             self.refinery = Refinery(store: store) {
-                SelectRefiner(storeKey: \BasicStore.state, mode: .single) {
+                SelectRefiner("State", storeKey: \BasicStore.state, mode: .single) {
                     for option in Self.stateOptions {
                         RefinerOption(option, value: option)
                     }
