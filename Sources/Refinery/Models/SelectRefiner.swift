@@ -22,7 +22,7 @@ public class SelectRefiner<Store: RefineryStore>: Refiner<Store> {
 
     // MARK: Lifecycle
 
-    public init(storeKey: WritableKeyPath<Store, String?>, mode: Mode, @RefinerOptionsBuilder _ options: () -> [RefinerOption<Store>]) {
+    public init(storeKey: WritableKeyPath<Store, String?>, mode: Mode, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
         self.mode = mode
         super.init(storeKey: storeKey, options)
     }

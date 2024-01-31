@@ -12,6 +12,10 @@ let package = Package(
             name: "Refinery",
             targets: ["Refinery"]
         ),
+        .library(
+            name: "Examples",
+            targets: ["Examples"]
+        ),
     ],
     targets: [
         

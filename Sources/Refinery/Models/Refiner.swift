@@ -15,7 +15,7 @@ public class Refiner<Store: RefineryStore> {
     
     // MARK: Internal private(set)
     
-    
+    private(set) var hide: Bool = false
 
     // MARK: Private
     
@@ -24,8 +24,15 @@ public class Refiner<Store: RefineryStore> {
 
     // MARK: Lifecycle
 
-    public init(storeKey: WritableKeyPath<Store, String?>, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
+    init(storeKey: WritableKeyPath<Store, String?>, @RefinerOptionsBuilder _ options: () -> [RefinerOption]) {
         self.options = options()
         self.storeKey = storeKey
+    }
+    
+    // MARK: Config
+    
+    public func hidden() -> Self {
+        hide = true
+        return self
     }
 }

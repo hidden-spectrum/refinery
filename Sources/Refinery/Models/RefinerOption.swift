@@ -11,6 +11,7 @@ public class RefinerOption {
 
     // MARK: Internal
     
+    let displayText: String
     let value: String
     
     // MARK: Internal private(set)
@@ -21,7 +22,8 @@ public class RefinerOption {
 
     // MARK: Lifecycle
 
-    public init(value: String) {
+    public init(_ displayText: String, value: String) {
+        self.displayText = displayText
         self.value = value
     }
     
