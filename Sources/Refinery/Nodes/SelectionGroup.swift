@@ -18,10 +18,8 @@ public enum SelectGroupMethod {
     
     var selectableOptionStyle: SelectableOptionStyle {
         switch self {
-        case .single:
-            return .single
-        case .multiple:
-            return .multiple
+        case .single:   .single
+        case .multiple: .multiple
         }
     }
 }
@@ -29,10 +27,8 @@ public enum SelectGroupMethod {
 extension SelectGroupMethod: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case .single:
-            return "single"
-        case .multiple:
-            return "multiple"
+        case .single:   "single"
+        case .multiple: "multiple"
         }
     }
 }
@@ -60,13 +56,14 @@ public final class SelectionGroup: RefineryNode {
     
     let method: SelectGroupMethod
     
+    override var hasSelections: Bool {
+        !selectedChildren.isEmpty
+    }
+    
     var allOption: RefineryNode? {
         children.first(where: { ($0 as? BoolNode)?.isAllOption == true })
     }
     
-    override var hasSelections: Bool {
-        !selectedChildren.isEmpty
-    }
     var selectedIndexes: [Int] {
         children
             .enumerated()
@@ -149,6 +146,7 @@ public final class SelectionGroup: RefineryNode {
     
     func selectedOptionChanged(_ child: RefineryNode) {
         self.findRoot().initialLinkEvaluation()
+        
     }
     
     func selectedOptionsCount(_ counter: Int = 0) -> Int {

@@ -174,17 +174,17 @@ public class RefineryNode: ObservableObject, Identifiable {
     }
     
     public func assignStorage<Store: RefineryStore>(to keyPath: PartialKeyPath<Store>) -> Self {
-        self.storeKeyPath = keyPath
+        storeKeyPath = keyPath
         return self
     }
     
     public func disable() -> Self {
-        self.isEnabled = false
+        isEnabled = false
         return self
     }
     
     public func storeValue(_ value: String) -> Self {
-        self.storeValue = value
+        storeValue = value
         return self
     }
     
@@ -238,7 +238,7 @@ public class RefineryNode: ObservableObject, Identifiable {
             }
             sourceNode.links.append(link)
             links.remove(at: index)
-//            logger.debug("Migrated \(link) to \(sourceNode)")
+            logger.debug("Migrated \(link.debugDescription) to \(sourceNode.debugDescription)")
         }
         
         for child in children {

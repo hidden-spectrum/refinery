@@ -13,14 +13,11 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     @StateObject private var refinery: Refinery<Store>
     
-    private let containerWidth: CGFloat
-    
     // MARK: Lifecycle
     
-    public init(with refinery: Refinery<Store>, displayRefinery: Binding<Bool>, containerWidth: CGFloat) {
+    public init(with refinery: Refinery<Store>, displayRefinery: Binding<Bool>) {
         self._refinery = StateObject(wrappedValue: refinery)
         self._displayRefinery = displayRefinery
-        self.containerWidth = containerWidth
     }
     
     // MARK: View
@@ -29,9 +26,9 @@ public struct RefineryView<Store: RefineryStore>: View {
         VStack(spacing: 0) {
             NavigationView {
                 ScrollViewReader { scrollProxy in
-                    withAnimation(.none) {
+//                    withAnimation(.none) {
                         nodeList(with: scrollProxy)
-                    }
+//                    }
                 }
             }
             Divider()
@@ -41,14 +38,13 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     @ViewBuilder
     private func nodeList(with scrollProxy: ScrollViewProxy) -> some View {
-        List(refinery.root.children) { node in
-            if node.isVisible && !node.hideFromMenu {
-                buildView(for: node)
-                    .id(node.id)
+        Form {
+            ForEach(refinery.root.children) { node in
+                if node.isVisible && !node.hideFromMenu {
+                    buildView(for: node)
+                }
             }
         }
-        .listStyle(.plain)
-        .environment(\.defaultMinListRowHeight, 56)
         .navigationTitle(NSLocalizedString("Filter & Sort", comment: ""))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -91,9 +87,8 @@ public struct RefineryView<Store: RefineryStore>: View {
 //        } else if let rangeFilter = node as? RangeFilter {
 //            RangeFilterView(node: rangeFilter, surface: .advanced)
 //                .padding(.vertical, 4)
-//        } else if let selectionGroup = node as? SelectionGroup {
-//            SelectionGroupView.InlineView(for: selectionGroup, containerWidth: containerWidth, surface: .advanced)
-//                .padding(.vertical, 4)
+        } else if let selectionGroup = node as? SelectionGroup {
+            SelectionGroupView(for: selectionGroup)
         }
     }
 }

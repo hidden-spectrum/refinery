@@ -21,7 +21,7 @@ struct BasicExampleView: View {
             displayRefinery.toggle()
         }
         .popover(isPresented: $displayRefinery, content: {
-            RefineryView(with: viewModel.refinery)
+            RefineryView(with: viewModel.refinery, displayRefinery: $displayRefinery)
         })
     }
 }

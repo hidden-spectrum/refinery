@@ -11,11 +11,7 @@ let package = Package(
         .library(
             name: "Refinery",
             targets: ["Refinery"]
-        ),
-        .library(
-            name: "Examples",
-            targets: ["Examples"]
-        ),
+        )
     ],
     targets: [
         
@@ -23,10 +19,6 @@ let package = Package(
         
         .target(
             name: "Refinery"
-        ),
-        .target(
-            name: "Examples",
-            dependencies: ["Refinery"]
         ),
         
         // Tests

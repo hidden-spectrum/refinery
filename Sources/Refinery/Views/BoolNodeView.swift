@@ -9,19 +9,17 @@ struct BoolNodeView: View {
     
     // MARK: Internal
     
-    @ObservedObject var node: BoolNode
+    @StateObject var node: BoolNode
     
     // MARK: Lifecycle
     
     init(with node: BoolNode) {
-        self.node = node
+        _node = StateObject(wrappedValue: node)
     }
     
     // MARK: View
     
     var body: some View {
-        HStack {
-            Text("BoolNodeView")
-        }
+        Toggle(node.title, isOn: $node.isSelected)
     }
 }

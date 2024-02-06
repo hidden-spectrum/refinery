@@ -10,5 +10,5 @@ class BasicStore: RefineryStore {
 
     // MARK: Internal
     
-    var state: String?
+    var sortOption: String?
 }
