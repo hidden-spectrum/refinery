@@ -67,8 +67,8 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     init(title: String = "", children: [RefineryNode] = []) {
         self.title = title
-        self.rawValue = title.lowercased()
-        self.storeValue = title.lowercased()
+        rawValue = title.lowercased()
+        storeValue = title.lowercased()
         
         addChildren(children)
         setupObservers()
@@ -246,10 +246,10 @@ public class RefineryNode: ObservableObject, Identifiable {
         }
     }
     
-    func initialLinkEvaluation() {
+    func evaluateAllLinks() {
         evaluateLinks()
         for child in children {
-            child.initialLinkEvaluation()
+            child.evaluateAllLinks()
         }
     }
     
@@ -317,7 +317,7 @@ extension RefineryNode: CustomDebugStringConvertible {
     }
     
     func recursiveBuildDebugDescription() -> [String] {
-        return [nodeDescription] + self.children
+        return [nodeDescription] + children
             .flatMap { $0.recursiveBuildDebugDescription() }
             .map { "\t" + $0 }
     }

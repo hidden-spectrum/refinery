@@ -6,22 +6,9 @@ import Foundation
 import os.log
 
 
-public enum SelectableOptionStyle {
-    case single
-    case multiple
-}
-
-
 public enum SelectGroupMethod {
     case single
     case multiple
-    
-    var selectableOptionStyle: SelectableOptionStyle {
-        switch self {
-        case .single:   .single
-        case .multiple: .multiple
-        }
-    }
 }
 
 extension SelectGroupMethod: CustomDebugStringConvertible {
@@ -47,9 +34,7 @@ public final class SelectionGroup: RefineryNode {
     }
     
     public var selectedChildren: [BoolNode] {
-        children
-            .compactMap { $0 as? BoolNode }
-            .filter { $0.isSelected }
+        boolChildren.filter { $0.isSelected }
     }
     
     // MARK: Internal
@@ -79,6 +64,10 @@ public final class SelectionGroup: RefineryNode {
     
     let logger = Logger(subsystem: "io.hiddenspectrum.refinery", category: "SelectionGroup")
     
+    private var boolChildren: [BoolNode] {
+        children.compactMap({ $0 as? BoolNode })
+    }
+    
     // MARK: Lifecycle
     
     public init(title: String, method: SelectGroupMethod, @RefineryBuilder _ builder: () -> [RefineryNode]) {
@@ -99,17 +88,17 @@ public final class SelectionGroup: RefineryNode {
     
     override func setupObservers() {
         super.setupObservers()
-        children.compactMap({ $0 as? BoolNode }).forEach { child in
+        
+        boolChildren.forEach { child in
             child.$isSelected
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [unowned self] _ in
-                    self.selectedOptionChanged(child)
+                    self.selectedOptionChanged(by: child)
                 }
                 .store(in: &cancellables)
         }
         
-    
         $isEnabled
             .removeDuplicates()
             .sink { [unowned self] newValue in
@@ -126,7 +115,7 @@ public final class SelectionGroup: RefineryNode {
             .store(in: &cancellables)
     }
     
-    // MARK: Data Storage
+    // MARK: Node Overrides
     
     override func updateValue<Store: RefineryStore>(in store: inout Store) {
         guard let storeKeyPath else {
@@ -142,11 +131,49 @@ public final class SelectionGroup: RefineryNode {
         }
     }
     
+    override func evaluateNonStandardLink(_ link: NodeLink, targetNode: RefineryNode) {
+        switch (link.condition, link.action) {
+        case (.selected, .show):
+            targetNode.isVisible = hasSelections
+        case (.selected, .hide):
+            targetNode.isVisible = !hasSelections
+        default:
+            logger.warning("Unhandled link: \(link.debugDescription)")
+        }
+    }
+    
+    override public func reset() {
+        children.forEach { $0.reset() }
+    }
+    
     // MARK: Compute
     
-    func selectedOptionChanged(_ child: RefineryNode) {
-        self.findRoot().initialLinkEvaluation()
+    func selectedOptionChanged(by child: BoolNode) {
+        evaluateGroupSelections(afterChangeOf: child)
+        evaluateLinks(sourceActionFilter: .selected)
+    }
+    
+    func evaluateGroupSelections(afterChangeOf modifiedChild: BoolNode) {
+        defer {
+            if selectedChildren.isEmpty, let anyOption = boolChildren.first(where: { $0.isAllOption }) {
+                anyOption.isSelected = true
+            }
+        }
         
+        guard modifiedChild.isSelected else {
+            return
+        }
+        
+        switch method {
+        case .single:
+            let otherSelectedBoolNodes = boolChildren
+                .filter { $0.id != modifiedChild.id && $0.isSelected }
+            for child in otherSelectedBoolNodes {
+                child.isSelected = false
+            }
+        case .multiple:
+            break
+        }
     }
     
     func selectedOptionsCount(_ counter: Int = 0) -> Int {
@@ -159,25 +186,6 @@ public final class SelectionGroup: RefineryNode {
             }
         }
         return mutableCounter
-    }
-    
-    override func evaluateNonStandardLink(_ link: NodeLink, targetNode: RefineryNode) {
-        switch (link.condition, link.action) {
-        case (.selected, .show):
-            targetNode.isVisible = isSelected
-        case (.selected, .hide):
-            targetNode.isVisible = !isSelected
-        default:
-            logger.warning("Unhandled link: \(link.debugDescription)")
-        }
-    }
-    
-    private var isSelected: Bool {
-        children.compactMap({ $0 as? BoolNode }).contains(where: { $0.isSelected })
-    }
-    
-    override public func reset() {
-        children.forEach { $0.reset() }
     }
     
     public func boolFilter(matchingID id: Int) -> BoolNode? {

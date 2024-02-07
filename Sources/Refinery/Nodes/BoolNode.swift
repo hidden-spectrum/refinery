@@ -11,12 +11,7 @@ public final class BoolNode: RefineryNode {
     // MARK: Internal
     
     @Published var isAllOption: Bool = false
-    @Published var isSelected: Bool = false {
-        didSet {
-            findRoot().initialLinkEvaluation()
-            
-        }
-    }
+    @Published var isSelected: Bool = false
     
     // MARK: Private
     
@@ -29,7 +24,21 @@ public final class BoolNode: RefineryNode {
         super.init(title: title)
     }
     
-    // MARK: Node Config
+    // MARK: Node Overrides / Updates
+    
+    override func setupObservers() {
+        super.setupObservers()
+        if parent is SelectionGroup {
+            return
+        }
+        $isSelected
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [unowned self] _ in
+                findRoot().evaluateAllLinks()
+            }
+            .store(in: &cancellables)
+    }
     
     override func evaluateNonStandardLink(_ link: NodeLink, targetNode: RefineryNode) {
         switch (link.condition, link.action) {

@@ -31,7 +31,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     // MARK: Lifecycle
     
     public init(title: String, store: inout Store, @RefineryBuilder _ builder: () -> [RefineryNode]) {
-        self.root = RefineryNode(title: title, children: builder())
+        root = RefineryNode(title: title, children: builder())
         self.store = store
         setRootObservers()
     }
@@ -45,7 +45,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     private func setRootObservers() {
         root.migrateLinks()
-        root.initialLinkEvaluation()
+        root.evaluateAllLinks()
         root.objectWillChange
             .sink { [unowned self] in
                 self.objectWillChange.send()
@@ -83,8 +83,8 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
             return
         }
         Task { @MainActor in
-            self.estimatedItemsCount = await self.storeUpdatedHandler?() ?? 0
-            self.requestUpdate = false
+            estimatedItemsCount = await storeUpdatedHandler?() ?? 0
+            requestUpdate = false
         }
     }
     
