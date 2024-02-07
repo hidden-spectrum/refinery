@@ -24,22 +24,41 @@ extension BasicExampleView {
             case filterOptionsGroup
         }
         
+        private enum SortOption: String {
+            case nameAsc = "name_asc"
+            case nameDesc = "name_desc"
+            case oldest
+            case newest
+        }
+        
         // MARK: Lifecycle
         
         init() {
             self.refinery = Refinery(title: "Basic Refinery", store: &store) {
                 BoolNode(title: "Show Filter Options")
                     .assignId(ExampleIds.showFilterOptions)
-                SelectionGroup(title: "Sort", method: .single) {
+                SelectionGroup(title: "Sort", method: .single(allowsEmptySelection: false)) {
                     BoolNode(title: "Name A-Z")
+                        .initialSelection()
+                        .storeValue(SortOption.nameAsc)
                     BoolNode(title: "Name Z-A")
+                        .storeValue(SortOption.nameDesc)
                     BoolNode(title: "Newest")
+                        .storeValue(SortOption.newest)
                     BoolNode(title: "Oldest")
+                        .storeValue(SortOption.oldest)
                 }
                 .style(.inline)
                 .assignId(ExampleIds.filterOptionsGroup)
                 .assignStorage(to: \BasicStore.sortOption)
                 .show(when: ExampleIds.showFilterOptions, meetsCondition: .selected)
+            }
+        }
+        
+        func linkStore() {
+            refinery.onStoreUpdated {
+                print(self.store.sortOption)
+                return 0
             }
         }
     }

@@ -7,15 +7,17 @@ import os.log
 
 
 public enum SelectGroupMethod {
-    case single
+    case single(allowsEmptySelection: Bool)
     case multiple
 }
 
 extension SelectGroupMethod: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case .single:   "single"
-        case .multiple: "multiple"
+        case .single(let allowsEmptySelection):
+            "single(allowsEmptySelection: \(allowsEmptySelection)"
+        case .multiple:
+            "multiple"
         }
     }
 }
@@ -155,8 +157,12 @@ public final class SelectionGroup: RefineryNode {
     
     func evaluateGroupSelections(afterChangeOf modifiedChild: BoolNode) {
         defer {
-            if selectedChildren.isEmpty, let anyOption = boolChildren.first(where: { $0.isAllOption }) {
-                anyOption.isSelected = true
+            if selectedChildren.isEmpty {
+                if let anyOption = boolChildren.first(where: { $0.isAllOption }) {
+                    anyOption.isSelected = true
+                } else if case .single(let allowsEmptySelection) = method, !allowsEmptySelection, !modifiedChild.isSelected {
+                    modifiedChild.isSelected = true
+                }
             }
         }
         

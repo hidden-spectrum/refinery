@@ -45,7 +45,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     @Published private(set) var hideFromMenu = false
     
-    private(set) var rawValue: String
     private(set) var children: [RefineryNode] = []
     private(set) var hideCloseButton = false
     private(set) var links: [NodeLink] = []
@@ -67,7 +66,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     init(title: String = "", children: [RefineryNode] = []) {
         self.title = title
-        rawValue = title.lowercased()
         storeValue = title.lowercased()
         
         addChildren(children)
@@ -180,6 +178,11 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     public func disable() -> Self {
         isEnabled = false
+        return self
+    }
+    
+    public func storeValue<T>(_ rawRepresentable: T) -> Self where T: RawRepresentable, T.RawValue == String {
+        storeValue = rawRepresentable.rawValue
         return self
     }
     

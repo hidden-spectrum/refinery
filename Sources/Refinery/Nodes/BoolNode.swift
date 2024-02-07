@@ -61,4 +61,11 @@ public final class BoolNode: RefineryNode {
         }
         store.update(isSelected, at: storeKeyPath)
     }
+    
+    // MARK: Config
+    
+    public func initialSelection() -> Self {
+        isSelected = true
+        return self
+    }
 }

@@ -23,6 +23,9 @@ struct BasicExampleView: View {
         .popover(isPresented: $displayRefinery, content: {
             RefineryView(with: viewModel.refinery, displayRefinery: $displayRefinery)
         })
+        .onAppear {
+            viewModel.linkStore()
+        }
     }
 }
 
