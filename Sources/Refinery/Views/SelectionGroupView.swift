@@ -28,6 +28,8 @@ struct SelectionGroupView: View {
         switch selectionGroup.style {
         case .inline:
             inlineGroup()
+        case .disclosure:
+            disclosureGroup()
         default:
             EmptyView()
         }
@@ -38,10 +40,15 @@ struct SelectionGroupView: View {
     @ViewBuilder
     private func inlineGroup() -> some View {
         Section(selectionGroup.title) {
-            ForEach(selectionGroup.children) { node in
-                boolNodeRow(with: node)
+            ForEach(selectionGroup.children) { option in
+                boolNodeRow(with: option)
             }
         }
+    }
+    
+    @ViewBuilder
+    private func disclosureGroup() -> some View {
+        Text("TBD")
     }
     
     @ViewBuilder

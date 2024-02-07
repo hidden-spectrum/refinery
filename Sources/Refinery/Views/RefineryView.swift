@@ -26,9 +26,7 @@ public struct RefineryView<Store: RefineryStore>: View {
         VStack(spacing: 0) {
             NavigationView {
                 ScrollViewReader { scrollProxy in
-//                    withAnimation(.none) {
-                        nodeList(with: scrollProxy)
-//                    }
+                    nodeList(with: scrollProxy)
                 }
             }
             Divider()
@@ -80,7 +78,6 @@ public struct RefineryView<Store: RefineryStore>: View {
     private func buildView(for node: RefineryNode) -> some View {
         if let boolNode = node as? BoolNode {
             BoolNodeView(with: boolNode)
-                .padding(.vertical, 4)
 //        } else if let rangeFilter = node as? ValueFilter {
 //            ValueFilterView(node: rangeFilter, surface: .advanced)
 //                .padding(.vertical, 4)
