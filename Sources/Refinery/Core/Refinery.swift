@@ -37,12 +37,12 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     private var applyHandler: ApplyClosure?
     private var storeUpdatedHandler: StoreUpdatedClosure?
     
-    
     // MARK: Lifecycle
     
     public init(_ title: String, @RefineryBuilder _ builder: () -> [RefineryNode]) {
         root = RefineryNode(title: title, children: builder())
         setRootObservers()
+        _updateStore(requestUpdate: false)
     }
     
     // MARK: Setup
@@ -59,10 +59,10 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
         
         $requestUpdate
             .debounce(for: 0.15, scheduler: DispatchQueue.main)
-            .sink(receiveValue: { [unowned self] _ in self.fetchCount() })
+            .sink { [unowned self] _ in
+                self.executeUpdate()
+            }
             .store(in: &cancellables)
-        
-        updateStore()
     }
     
     // MARK: Configuration
@@ -83,18 +83,18 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     func updateStore() {
         DispatchQueue.main.async { [weak self] in
-            self?._updateStore()
+            self?._updateStore(requestUpdate: true)
         }
     }
     
-    private func _updateStore() {
+    private func _updateStore(requestUpdate: Bool) {
         for node in root.children {
             node.updateValue(in: &currentStore)
         }
-        requestUpdate = true
+        self.requestUpdate = requestUpdate
     }
     
-    private func fetchCount() {
+    private func executeUpdate() {
         guard requestUpdate else {
             return
         }

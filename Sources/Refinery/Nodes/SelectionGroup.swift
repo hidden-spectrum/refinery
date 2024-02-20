@@ -46,7 +46,9 @@ public final class SelectionGroup: RefineryNode {
     var allOption: RefineryNode? {
         children.first(where: { ($0 as? BoolNode)?.isAllOption == true })
     }
-    
+    var boolChildren: [BoolNode] {
+        children.compactMap({ $0 as? BoolNode })
+    }
     var selectedIndexes: [Int] {
         children
             .enumerated()
@@ -61,10 +63,6 @@ public final class SelectionGroup: RefineryNode {
     // MARK: Private
     
     let logger = Logger(subsystem: "io.hiddenspectrum.refinery", category: "SelectionGroup")
-    
-    private var boolChildren: [BoolNode] {
-        children.compactMap({ $0 as? BoolNode })
-    }
     
     // MARK: Lifecycle
     

@@ -15,6 +15,14 @@ public class RefineryNode: ObservableObject, Identifiable {
         case fullView
         case quickFilterBar(index: Int, title: String?)
         case popover
+        
+        var context: DisplayContext {
+            switch self {
+            case .fullView:       .fullView
+            case .quickFilterBar: .quickFilterBar
+            case .popover:        .popover
+            }
+        }
     }
     
     public typealias StoreUpdatedClosure = (() async -> Int?)
@@ -54,20 +62,10 @@ public class RefineryNode: ObservableObject, Identifiable {
         quickFilterBarPosition != nil
     }
     var shouldShowInFullView: Bool {
-        displayLocations.contains {
-            if case .fullView = $0 {
-                return true
-            }
-            return false
-        }
+        displayLocations.map { $0.context }.contains(.fullView)
     }
     var shouldShowInPopover: Bool {
-        displayLocations.contains {
-            if case .popover = $0 {
-                return true
-            }
-            return false
-        }
+        displayLocations.map { $0.context }.contains(.popover)
     }
     
     // MARK: Internal private(set)

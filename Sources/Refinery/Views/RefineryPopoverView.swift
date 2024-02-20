@@ -35,9 +35,6 @@ public struct RefineryPopoverView<Store: RefineryStore>: View {
             }
         }
         .presentationCompactAdaptation(.popover)
-        .onDisappear {
-            refinery.apply()
-        }
         .padding()
     }
     
@@ -45,16 +42,13 @@ public struct RefineryPopoverView<Store: RefineryStore>: View {
     private func buildView(for node: RefineryNode) -> some View {
         if let boolNode = node as? BoolNode {
             BoolNodeView(with: boolNode)
-        } else if let textNode = node as? TextNode {
-            TextNodeView(with: textNode)
-//        } else if let rangeFilter = node as? ValueFilter {
-//            ValueFilterView(node: rangeFilter, surface: .advanced)
-//                .padding(.vertical, 4)
-//        } else if let rangeFilter = node as? RangeFilter {
-//            RangeFilterView(node: rangeFilter, surface: .advanced)
-//                .padding(.vertical, 4)
+        } else if node is TextNode {
+            preconditionFailure("TextNode not supported in RefineryPopoverView")
         } else if let selectionGroup = node as? SelectionGroup {
-            SelectionGroupView(for: selectionGroup)
+            SelectionGroupView(for: selectionGroup, context: .popover)
+                .onChange(of: selectionGroup.selectedChildren) { _ in
+                    refinery.apply()
+                }
         }
     }
 }

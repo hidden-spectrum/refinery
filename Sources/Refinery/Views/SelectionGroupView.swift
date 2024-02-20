@@ -7,31 +7,31 @@ import SwiftUI
 
 struct SelectionGroupView: View {
 
-    // MARK: Public
-
-    // MARK: Internal
-
     // MARK: Private
     
-    @StateObject
-    private var selectionGroup: SelectionGroup
+    @StateObject private var selectionGroup: SelectionGroup
+    
+    private let context: DisplayContext
 
     // MARK: Lifecycle
 
-    init(for selectionGroup: SelectionGroup) {
+    init(for selectionGroup: SelectionGroup, context: DisplayContext = .fullView) {
         _selectionGroup = StateObject(wrappedValue: selectionGroup)
+        self.context = context
     }
     
     // MARK: View
     
     var body: some View {
-        switch selectionGroup.style {
-        case .inline:
-            inlineGroup()
-        case .disclosure:
-            disclosureGroup()
-        default:
-            EmptyView()
+        Group {
+            switch selectionGroup.style {
+            case .inline:
+                inlineGroup()
+            case .disclosure:
+                disclosureGroup()
+            default:
+                EmptyView()
+            }
         }
     }
     
@@ -40,7 +40,7 @@ struct SelectionGroupView: View {
     @ViewBuilder
     private func inlineGroup() -> some View {
         Section(selectionGroup.title) {
-            ForEach(selectionGroup.children) { option in
+            ForEach(selectionGroup.boolChildren) { option in
                 boolNodeRow(with: option)
             }
         }
@@ -52,21 +52,19 @@ struct SelectionGroupView: View {
     }
     
     @ViewBuilder
-    private func boolNodeRow(with node: RefineryNode) -> some View {
-        if let boolNode = node as? BoolNode {
-            HStack {
-                Text(boolNode.title)
-                Spacer()
-                if boolNode.isSelected {
-                    Image(systemName: "checkmark")
-                        .font(.caption)
-                }
+    private func boolNodeRow(with node: BoolNode) -> some View {
+        HStack {
+            Text(node.title)
+            Spacer()
+            if node.isSelected {
+                Image(systemName: "checkmark")
+                    .font(.caption)
             }
-            .frame(minHeight: 24)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                boolNode.isSelected.toggle()
-            }
+        }
+        .frame(minHeight: 24)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            node.isSelected.toggle()
         }
     }
 }
