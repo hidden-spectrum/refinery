@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F80B087E2B72F16200C436D4 /* BasicExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80B08782B72F16200C436D4 /* BasicExampleView.swift */; };
-		F80B087F2B72F16200C436D4 /* BasicExampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80B08792B72F16200C436D4 /* BasicExampleViewModel.swift */; };
 		F80B08802B72F16200C436D4 /* BasicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80B087A2B72F16200C436D4 /* BasicStore.swift */; };
 		F80B08812B72F16200C436D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F80B087C2B72F16200C436D4 /* Assets.xcassets */; };
 		F80B08822B72F16200C436D4 /* RefineryExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80B087D2B72F16200C436D4 /* RefineryExamples.swift */; };
@@ -18,7 +17,6 @@
 /* Begin PBXFileReference section */
 		F80B08662B72F0D800C436D4 /* RefineryExamples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RefineryExamples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F80B08782B72F16200C436D4 /* BasicExampleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicExampleView.swift; sourceTree = "<group>"; };
-		F80B08792B72F16200C436D4 /* BasicExampleViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicExampleViewModel.swift; sourceTree = "<group>"; };
 		F80B087A2B72F16200C436D4 /* BasicStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicStore.swift; sourceTree = "<group>"; };
 		F80B087C2B72F16200C436D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F80B087D2B72F16200C436D4 /* RefineryExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefineryExamples.swift; sourceTree = "<group>"; };
@@ -57,7 +55,6 @@
 			isa = PBXGroup;
 			children = (
 				F80B08782B72F16200C436D4 /* BasicExampleView.swift */,
-				F80B08792B72F16200C436D4 /* BasicExampleViewModel.swift */,
 				F80B087A2B72F16200C436D4 /* BasicStore.swift */,
 			);
 			path = Basic;
@@ -147,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F80B087F2B72F16200C436D4 /* BasicExampleViewModel.swift in Sources */,
 				F80B08802B72F16200C436D4 /* BasicStore.swift in Sources */,
 				F80B08822B72F16200C436D4 /* RefineryExamples.swift in Sources */,
 				F80B087E2B72F16200C436D4 /* BasicExampleView.swift in Sources */,
@@ -291,6 +287,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -319,6 +316,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

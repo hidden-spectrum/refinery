@@ -6,7 +6,20 @@ import Foundation
 import Refinery
 
 
-class BasicStore: RefineryStore {
+enum ExampleIds: Int {
+    case showFilterOptions
+    case filterOptionsGroup
+}
+
+enum SortOption: String {
+    case nameAsc = "name_asc"
+    case nameDesc = "name_desc"
+    case oldest
+    case newest
+}
+
+
+struct BasicStore: RefineryStore {
 
     // MARK: Internal
     

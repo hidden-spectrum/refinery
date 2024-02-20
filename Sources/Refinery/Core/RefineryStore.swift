@@ -6,6 +6,7 @@ import Foundation
 
 
 public protocol RefineryStore {
+    init()
 }
 
 extension RefineryStore {

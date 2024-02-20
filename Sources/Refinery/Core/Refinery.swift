@@ -10,7 +10,11 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Public
     
-    public typealias StoreUpdatedClosure = (() async -> Int?)
+    public typealias StoreUpdatedClosure = ((Store) async -> Int?)
+    
+    // MARK: Public private(set)
+    
+    public private(set) var currentStore = Store()
     
     // MARK: Internal
     
@@ -25,14 +29,12 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     @Published private var requestUpdate: Bool = false
     
-    private var store: Store
     private var storeUpdatedHandler: StoreUpdatedClosure?
     
     // MARK: Lifecycle
     
-    public init(title: String, store: inout Store, @RefineryBuilder _ builder: () -> [RefineryNode]) {
+    public init(title: String, @RefineryBuilder _ builder: () -> [RefineryNode]) {
         root = RefineryNode(title: title, children: builder())
-        self.store = store
         setRootObservers()
     }
     
@@ -73,7 +75,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     private func updateStore() {
         for node in root.children {
-            node.updateValue(in: &store)
+            node.updateValue(in: &currentStore)
         }
         requestUpdate = true
     }
@@ -83,7 +85,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
             return
         }
         Task { @MainActor in
-            estimatedItemsCount = await storeUpdatedHandler?() ?? 0
+            estimatedItemsCount = await storeUpdatedHandler?(currentStore) ?? 0
             requestUpdate = false
         }
     }
