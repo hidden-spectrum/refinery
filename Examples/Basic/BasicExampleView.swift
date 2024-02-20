@@ -21,20 +21,20 @@ struct BasicExampleView: View {
     }
     
     static func buildRefinery() -> Refinery<BasicStore> {
-        Refinery(title: "Basic Refinery") {
-            TextNode(title: "Name")
+        Refinery("Basic Refinery") {
+            TextNode("Name")
                 .assignStorage(to: \BasicStore.nameSearch)
-            BoolNode(title: "Show Filter Options")
+            BoolNode("Show Filter Options")
                 .assignId(ExampleIds.showFilterOptions)
-            SelectionGroup(title: "Sort", method: .single(allowsEmptySelection: false)) {
-                BoolNode(title: "Name A-Z")
+            SelectionGroup("Sort", method: .single(allowsEmptySelection: false)) {
+                BoolNode("Name A-Z")
                     .initialSelection()
                     .value(SortOption.nameAsc)
-                BoolNode(title: "Name Z-A")
+                BoolNode("Name Z-A")
                     .value(SortOption.nameDesc)
-                BoolNode(title: "Newest")
+                BoolNode( "Newest")
                     .value(SortOption.newest)
-                BoolNode(title: "Oldest")
+                BoolNode("Oldest")
                     .value(SortOption.oldest)
             }
             .style(.inline)

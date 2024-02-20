@@ -22,6 +22,10 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     @Published var estimatedItemsCount: Int?
     @Published var root: RefineryNode
     
+    var showSeeResultsButton: Bool {
+        storeUpdatedHandler != nil
+    }
+    
     // MARK: Private(set)
     
     private(set) var cancellables: [AnyCancellable] = []
@@ -36,7 +40,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Lifecycle
     
-    public init(title: String, @RefineryBuilder _ builder: () -> [RefineryNode]) {
+    public init(_ title: String, @RefineryBuilder _ builder: () -> [RefineryNode]) {
         root = RefineryNode(title: title, children: builder())
         setRootObservers()
     }

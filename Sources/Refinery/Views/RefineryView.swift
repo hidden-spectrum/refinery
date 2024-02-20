@@ -13,6 +13,10 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     @StateObject private var refinery: Refinery<Store>
     
+    private var fullViewNodes: [RefineryNode] {
+        refinery.root.children.filter { $0.shouldShowInFullView }
+    }
+    
     // MARK: Lifecycle
     
     public init(with refinery: Refinery<Store>, displayRefinery: Binding<Bool>) {
@@ -29,7 +33,6 @@ public struct RefineryView<Store: RefineryStore>: View {
                     nodeList(with: scrollProxy)
                 }
             }
-            Divider()
             seeResultsButton()
         }
     }
@@ -45,34 +48,47 @@ public struct RefineryView<Store: RefineryStore>: View {
         }
         .navigationTitle(NSLocalizedString("Filter & Sort", comment: ""))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Reset") {
-                    refinery.reset()
-                    withAnimation {
-                        scrollProxy.scrollTo(refinery.root.children.first?.id, anchor: .top)
-                    }
+        .toolbar { toolbarContent(with: scrollProxy) }
+    }
+    
+    @ToolbarContentBuilder
+    private func toolbarContent(with scrollProxy: ScrollViewProxy) -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button("Reset") {
+                refinery.reset()
+                withAnimation {
+                    scrollProxy.scrollTo(refinery.root.children.first?.id, anchor: .top)
                 }
+            }
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button("Apply") {
+                refinery.apply()
+                displayRefinery = false
             }
         }
     }
     
     @ViewBuilder
     private func seeResultsButton() -> some View {
-        let seeResultsText: String = {
-            if let estimatedItemsCount = refinery.estimatedItemsCount {
-                return String(format: NSLocalizedString("See %i results", comment: ""), estimatedItemsCount)
-            } else {
-                return NSLocalizedString("See results", comment: "")
+        if refinery.showSeeResultsButton {
+            Divider()
+            
+            let seeResultsText: String = {
+                if let estimatedItemsCount = refinery.estimatedItemsCount {
+                    return String(format: NSLocalizedString("See %i results", comment: ""), estimatedItemsCount)
+                } else {
+                    return NSLocalizedString("See results", comment: "")
+                }
+            }()
+            
+            Button(seeResultsText) {
+                refinery.apply()
+                displayRefinery = false
             }
-        }()
-        
-        Button(seeResultsText) {
-            refinery.apply()
-            displayRefinery = false
+            .padding(.horizontal)
+            .padding(.vertical, 16)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 16)
     }
     
     @ViewBuilder

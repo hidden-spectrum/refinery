@@ -14,7 +14,7 @@ public final class TextNode: RefineryNode {
     
     // MARK: Lifecycle
     
-    public init(title: String) {
+    public init(_ title: String) {
         super.init(title: title)
     }
     

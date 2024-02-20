@@ -25,7 +25,7 @@ public final class BoolNode: RefineryNode {
     
     // MARK: Lifecycle
     
-    public init(title: String, isAllOption: Bool = false) {
+    public init(_ title: String, isAllOption: Bool = false) {
         self.isAllOption = isAllOption
         self.storeValue = title.lowercased()
         super.init(title: title)

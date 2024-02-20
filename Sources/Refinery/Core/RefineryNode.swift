@@ -11,6 +11,12 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     // MARK: Public
     
+    public enum DisplayLocation {
+        case fullView
+        case quickFilterBar(index: Int, title: String?)
+        case popover
+    }
+    
     public typealias StoreUpdatedClosure = (() async -> Int?)
     
     public var id: Int = UUID().hashValue
@@ -31,9 +37,37 @@ public class RefineryNode: ObservableObject, Identifiable {
     let title: String
     
     var cancellables: [AnyCancellable] = []
+    var displayLocations: [DisplayLocation] = [.fullView]
     var hasSelections: Bool {
         assertionFailure("hasSelections must be overridden in all subclasses")
         return false
+    }
+    var quickFilterBarPosition: Int? {
+        displayLocations.compactMap {
+            if case .quickFilterBar(let index, _) = $0 {
+                return index
+            }
+            return nil
+        }.first
+    }
+    var shouldShowInQuickFilterBar: Bool {
+        quickFilterBarPosition != nil
+    }
+    var shouldShowInFullView: Bool {
+        displayLocations.contains {
+            if case .fullView = $0 {
+                return true
+            }
+            return false
+        }
+    }
+    var shouldShowInPopover: Bool {
+        displayLocations.contains {
+            if case .popover = $0 {
+                return true
+            }
+            return false
+        }
     }
     
     // MARK: Internal private(set)
@@ -48,16 +82,12 @@ public class RefineryNode: ObservableObject, Identifiable {
     private(set) var children: [RefineryNode] = []
     private(set) var hideCloseButton = false
     private(set) var links: [NodeLink] = []
-    private(set) var quickFilterBarPosition: Int?
-    private(set) var quickFilterBarTitle: String?
     private(set) var seeResultsButtonTitle = NSLocalizedString("See results", comment: "")
     private(set) var storeKeyPath: AnyKeyPath?
     
     private(set) weak var parent: RefineryNode?
     
     // MARK: Private
-    
-    @Published private var hideFromQuickFilterBar = false
     
     private let logger = Logger(subsystem: "io.hiddenspectrum.refinery", category: "RefineryNode")
     
@@ -149,11 +179,11 @@ public class RefineryNode: ObservableObject, Identifiable {
         parent.removeChild(self)
     }
     
-    // MARK: Quick Filter Bar
+    // MARK: Display Locations
     
     func quickFilterNodes(using array: [RefineryNode]) -> [RefineryNode] {
         var mutableArray = array
-        if quickFilterBarPosition != nil, !hideFromQuickFilterBar {
+        if shouldShowInQuickFilterBar {
             mutableArray.append(self)
         }
         for child in children {
@@ -176,6 +206,11 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     public func disable() -> Self {
         isEnabled = false
+        return self
+    }
+    
+    public func display(in displayLocations: DisplayLocation...) -> Self {
+        self.displayLocations = displayLocations
         return self
     }
     

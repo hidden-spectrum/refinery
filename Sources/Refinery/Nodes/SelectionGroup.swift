@@ -72,7 +72,7 @@ public final class SelectionGroup: RefineryNode {
     
     // MARK: Lifecycle
     
-    public init(title: String, method: SelectGroupMethod, @RefineryBuilder _ builder: () -> [RefineryNode]) {
+    public init(_ title: String, method: SelectGroupMethod, @RefineryBuilder _ builder: () -> [RefineryNode]) {
         let nodes = builder()
         assert(!nodes.contains { !($0 is BoolNode) }, "SelectionGroup can only contain BoolNode types")
         self.method = method
