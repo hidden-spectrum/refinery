@@ -20,6 +20,10 @@ struct TextNodeView: View {
     // MARK: View
     
     var body: some View {
-        TextField(node.title, text: $node.text)
+        Section(
+            header: Text(node.title).font(.caption)
+        ) {
+            TextField(node.title, text: $node.text)
+        }
     }
 }

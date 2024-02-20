@@ -46,7 +46,7 @@ public struct RefineryView<Store: RefineryStore>: View {
                 }
             }
         }
-        .navigationTitle(NSLocalizedString("Filter & Sort", comment: ""))
+        .navigationTitle(refinery.root.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarContent(with: scrollProxy) }
     }
