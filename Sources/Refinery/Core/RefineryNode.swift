@@ -77,8 +77,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     // MARK: Private(set)
     
-    @Published private(set) var hideFromMenu = false
-    
     private(set) var children: [RefineryNode] = []
     private(set) var hideCloseButton = false
     private(set) var links: [NodeLink] = []

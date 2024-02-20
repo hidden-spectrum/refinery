@@ -40,8 +40,8 @@ public struct RefineryView<Store: RefineryStore>: View {
     @ViewBuilder
     private func nodeList(with scrollProxy: ScrollViewProxy) -> some View {
         Form {
-            ForEach(refinery.root.children) { node in
-                if node.isVisible && !node.hideFromMenu {
+            ForEach(fullViewNodes) { node in
+                if node.isVisible {
                     buildView(for: node)
                 }
             }
