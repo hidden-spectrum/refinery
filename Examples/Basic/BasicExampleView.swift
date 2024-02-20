@@ -42,9 +42,8 @@ struct BasicExampleView: View {
             .assignStorage(to: \BasicStore.sortOption)
             .show(when: ExampleIds.showFilterOptions, meetsCondition: .selected)
         }
-        .onStoreUpdated { store in
+        .onApply { store in
             dump(store)
-            return 0
         }
     }
     

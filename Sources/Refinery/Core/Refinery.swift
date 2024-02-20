@@ -10,6 +10,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Public
     
+    public typealias ApplyClosure = ((Store) async -> Void)
     public typealias StoreUpdatedClosure = ((Store) async -> Int?)
     
     // MARK: Public private(set)
@@ -29,7 +30,9 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     @Published private var requestUpdate: Bool = false
     
+    private var applyHandler: ApplyClosure?
     private var storeUpdatedHandler: StoreUpdatedClosure?
+    
     
     // MARK: Lifecycle
     
@@ -71,6 +74,12 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
         return self
     }
     
+    @discardableResult
+    public func onApply(_ applyHandler: @escaping ApplyClosure) -> Self {
+        self.applyHandler = applyHandler
+        return self
+    }
+    
     // MARK: Data Storage
     
     private func updateStore() {
@@ -85,12 +94,18 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
             return
         }
         Task { @MainActor in
-            estimatedItemsCount = await storeUpdatedHandler?(currentStore) ?? 0
+            estimatedItemsCount = await storeUpdatedHandler?(currentStore)
             requestUpdate = false
         }
     }
     
-    // MARK: Object Control
+    // MARK: Refinery Control
+    
+    func apply() {
+        Task { @MainActor in
+            await applyHandler?(currentStore)
+        }
+    }
     
     func reset() {
         root.children.forEach { $0.reset() }

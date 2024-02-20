@@ -68,6 +68,7 @@ public struct RefineryView<Store: RefineryStore>: View {
         }()
         
         Button(seeResultsText) {
+            refinery.apply()
             displayRefinery = false
         }
         .padding(.horizontal)
