@@ -35,14 +35,16 @@ public final class BoolNode: RefineryNode {
     
     override func setupObservers() {
         super.setupObservers()
-        if parent is SelectionGroup {
-            return
-        }
+        
         $isSelected
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [unowned self] _ in
-                findRoot().evaluateAllLinks()
+                if let selectionGroup = parent as? SelectionGroup {
+                    selectionGroup.selectedOptionChanged(by: self)
+                } else {
+                    findRoot().evaluateAllLinks()
+                }
             }
             .store(in: &cancellables)
     }

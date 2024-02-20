@@ -47,20 +47,13 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Setup
     
-    public func updateRootBuilder(title: String, @RefineryBuilder _ builder: () -> [RefineryNode]) {
-        root = RefineryNode(title: title, children: builder())
-        setRootObservers()
-    }
-    
     private func setRootObservers() {
         root.migrateLinks()
         root.evaluateAllLinks()
         root.objectWillChange
             .sink { [unowned self] in
                 self.objectWillChange.send()
-                DispatchQueue.main.async { [weak self] in
-                    self?.updateStore()
-                }
+                updateStore()
             }
             .store(in: &cancellables)
         
@@ -68,6 +61,8 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
             .debounce(for: 0.15, scheduler: DispatchQueue.main)
             .sink(receiveValue: { [unowned self] _ in self.fetchCount() })
             .store(in: &cancellables)
+        
+        updateStore()
     }
     
     // MARK: Configuration
@@ -86,7 +81,13 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Data Storage
     
-    private func updateStore() {
+    func updateStore() {
+        DispatchQueue.main.async { [weak self] in
+            self?._updateStore()
+        }
+    }
+    
+    private func _updateStore() {
         for node in root.children {
             node.updateValue(in: &currentStore)
         }

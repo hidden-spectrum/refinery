@@ -20,7 +20,7 @@ public final class TextNode: RefineryNode {
     
     // MARK: RefineryNode
     
-    override var hasSelections: Bool {
+    override var hasValue: Bool {
         !text.isEmpty
     }
     

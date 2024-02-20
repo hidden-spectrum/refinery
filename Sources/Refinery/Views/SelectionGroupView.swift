@@ -59,8 +59,10 @@ struct SelectionGroupView: View {
                 Spacer()
                 if boolNode.isSelected {
                     Image(systemName: "checkmark")
+                        .font(.caption)
                 }
             }
+            .frame(minHeight: 24)
             .contentShape(Rectangle())
             .onTapGesture {
                 boolNode.isSelected.toggle()

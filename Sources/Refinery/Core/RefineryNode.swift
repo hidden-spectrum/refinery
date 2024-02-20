@@ -38,7 +38,7 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     var cancellables: [AnyCancellable] = []
     var displayLocations: [DisplayLocation] = [.fullView]
-    var hasSelections: Bool {
+    var hasValue: Bool {
         assertionFailure("hasSelections must be overridden in all subclasses")
         return false
     }

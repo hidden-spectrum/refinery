@@ -43,10 +43,6 @@ public final class SelectionGroup: RefineryNode {
     
     let method: SelectGroupMethod
     
-    override var hasSelections: Bool {
-        !selectedChildren.isEmpty
-    }
-    
     var allOption: RefineryNode? {
         children.first(where: { ($0 as? BoolNode)?.isAllOption == true })
     }
@@ -91,16 +87,6 @@ public final class SelectionGroup: RefineryNode {
     override func setupObservers() {
         super.setupObservers()
         
-        boolChildren.forEach { child in
-            child.$isSelected
-                .removeDuplicates()
-                .receive(on: DispatchQueue.main)
-                .sink { [unowned self] _ in
-                    self.selectedOptionChanged(by: child)
-                }
-                .store(in: &cancellables)
-        }
-        
         $isEnabled
             .removeDuplicates()
             .sink { [unowned self] newValue in
@@ -118,6 +104,10 @@ public final class SelectionGroup: RefineryNode {
     }
     
     // MARK: Node Overrides
+    
+    override var hasValue: Bool {
+        !selectedChildren.isEmpty
+    }
     
     override func updateValue<Store: RefineryStore>(in store: inout Store) {
         guard let storeKeyPath else {
@@ -142,9 +132,9 @@ public final class SelectionGroup: RefineryNode {
     override func evaluateNonStandardLink(_ link: NodeLink, targetNode: RefineryNode) {
         switch (link.condition, link.action) {
         case (.selected, .show):
-            targetNode.isVisible = hasSelections
+            targetNode.isVisible = hasValue
         case (.selected, .hide):
-            targetNode.isVisible = !hasSelections
+            targetNode.isVisible = !hasValue
         default:
             logger.warning("Unhandled link: \(link.debugDescription)")
         }

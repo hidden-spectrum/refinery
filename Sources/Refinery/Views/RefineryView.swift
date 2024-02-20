@@ -9,9 +9,12 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     // MARK: Private
     
-    @Binding private var displayRefinery: Bool
+    @Binding private var display: Bool
     
     @StateObject private var refinery: Refinery<Store>
+    
+    @State var backgroundColor: Color?
+    @State var font: Font?
     
     private var fullViewNodes: [RefineryNode] {
         refinery.root.children.filter { $0.shouldShowInFullView }
@@ -19,9 +22,21 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     // MARK: Lifecycle
     
-    public init(with refinery: Refinery<Store>, displayRefinery: Binding<Bool>) {
+    public init(with refinery: Refinery<Store>, display: Binding<Bool>) {
         self._refinery = StateObject(wrappedValue: refinery)
-        self._displayRefinery = displayRefinery
+        self._display = display
+    }
+    
+    // MARK: View Configuration
+    
+    public func refineryBackgroundColor(_ color: Color) -> Self {
+        self.backgroundColor = color
+        return self
+    }
+    
+    public func refineryFont(_ font: Font) -> Self {
+        self.font = font
+        return self
     }
     
     // MARK: View
@@ -46,6 +61,9 @@ public struct RefineryView<Store: RefineryStore>: View {
                 }
             }
         }
+        .font(font)
+        .scrollContentBackground(.hidden)
+        .background(backgroundColor)
         .navigationTitle(refinery.root.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarContent(with: scrollProxy) }
@@ -64,7 +82,7 @@ public struct RefineryView<Store: RefineryStore>: View {
         ToolbarItem(placement: .navigationBarTrailing) {
             Button("Apply") {
                 refinery.apply()
-                displayRefinery = false
+                display = false
             }
         }
     }
@@ -84,7 +102,7 @@ public struct RefineryView<Store: RefineryStore>: View {
             
             Button(seeResultsText) {
                 refinery.apply()
-                displayRefinery = false
+                display = false
             }
             .padding(.horizontal)
             .padding(.vertical, 16)
