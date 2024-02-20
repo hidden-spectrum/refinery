@@ -5,6 +5,7 @@
 import SwiftUI
 
 
+@available(iOS 16.4, *)
 public struct RefineryPopoverView<Store: RefineryStore>: View {
     
     // MARK: Private

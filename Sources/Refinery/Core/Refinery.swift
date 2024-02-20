@@ -114,6 +114,9 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     func reset() {
         root.children.forEach { $0.reset() }
+        if storeUpdatedHandler == nil {
+            apply()   
+        }
     }
     
     // MARK: Quick Filter Bar

@@ -6,7 +6,7 @@ import PackageDescription
 
 let package = Package(
     name: "Refinery",
-    platforms: [.iOS("16.4")],
+    platforms: [.iOS(.v16)],
     products: [
         .library(
             name: "Refinery",
