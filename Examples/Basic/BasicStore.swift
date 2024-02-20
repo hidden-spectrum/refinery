@@ -24,4 +24,5 @@ struct BasicStore: RefineryStore {
     // MARK: Internal
     
     var sortOption: String?
+    var nameSearch: String?
 }

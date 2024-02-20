@@ -123,8 +123,14 @@ public final class SelectionGroup: RefineryNode {
         guard let storeKeyPath else {
             return
         }
-
-        let storeValues = selectedChildren.map { $0.storeValue }
+        
+        if !isEnabled || !isVisible {
+            let nilValue: String? = nil
+            store.update(nilValue, at: storeKeyPath)
+            return
+        }
+        
+        let storeValues = selectedChildren.compactMap { $0.storeValue }
         switch method {
         case .multiple:
             store.update(storeValues.isEmpty ? nil : storeValues, at: storeKeyPath)

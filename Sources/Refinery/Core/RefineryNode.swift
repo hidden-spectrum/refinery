@@ -52,7 +52,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     private(set) var quickFilterBarTitle: String?
     private(set) var seeResultsButtonTitle = NSLocalizedString("See results", comment: "")
     private(set) var storeKeyPath: AnyKeyPath?
-    private(set) var storeValue: String
     
     private(set) weak var parent: RefineryNode?
     
@@ -66,7 +65,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     init(title: String = "", children: [RefineryNode] = []) {
         self.title = title
-        storeValue = title.lowercased()
         
         addChildren(children)
         setupObservers()
@@ -178,16 +176,6 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     public func disable() -> Self {
         isEnabled = false
-        return self
-    }
-    
-    public func storeValue<T>(_ rawRepresentable: T) -> Self where T: RawRepresentable, T.RawValue == String {
-        storeValue = rawRepresentable.rawValue
-        return self
-    }
-    
-    public func storeValue(_ value: String) -> Self {
-        storeValue = value
         return self
     }
     

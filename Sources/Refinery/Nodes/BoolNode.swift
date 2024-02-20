@@ -13,18 +13,25 @@ public final class BoolNode: RefineryNode {
     @Published var isAllOption: Bool = false
     @Published var isSelected: Bool = false
     
+    // MARK: Intenral private(set)
+    
+    private(set) var storeValue: String?
+    
     // MARK: Private
     
-    let logger = Logger(subsystem: "io.hiddenspectrum.refinery", category: "BoolNode")
+    private let logger = Logger(subsystem: "io.hiddenspectrum.refinery", category: "BoolNode")
+    
+    private var initialState: Bool = false
     
     // MARK: Lifecycle
     
     public init(title: String, isAllOption: Bool = false) {
         self.isAllOption = isAllOption
+        self.storeValue = title.lowercased()
         super.init(title: title)
     }
     
-    // MARK: Node Overrides / Updates
+    // MARK: RefineryNode
     
     override func setupObservers() {
         super.setupObservers()
@@ -52,7 +59,7 @@ public final class BoolNode: RefineryNode {
     }
     
     override func reset() {
-        // todo
+        isSelected = initialState
     }
     
     override func updateValue<Store>(in store: inout Store) where Store: RefineryStore {
@@ -66,6 +73,17 @@ public final class BoolNode: RefineryNode {
     
     public func initialSelection() -> Self {
         isSelected = true
+        initialState = true
+        return self
+    }
+    
+    public func value<T>(_ rawRepresentable: T) -> Self where T: RawRepresentable, T.RawValue == String {
+        storeValue = rawRepresentable.rawValue
+        return self
+    }
+    
+    public func value(_ value: String) -> Self {
+        storeValue = value
         return self
     }
 }

@@ -22,18 +22,20 @@ struct BasicExampleView: View {
     
     static func buildRefinery() -> Refinery<BasicStore> {
         Refinery(title: "Basic Refinery") {
+            TextNode(title: "Name")
+                .assignStorage(to: \BasicStore.nameSearch)
             BoolNode(title: "Show Filter Options")
                 .assignId(ExampleIds.showFilterOptions)
             SelectionGroup(title: "Sort", method: .single(allowsEmptySelection: false)) {
                 BoolNode(title: "Name A-Z")
                     .initialSelection()
-                    .storeValue(SortOption.nameAsc)
+                    .value(SortOption.nameAsc)
                 BoolNode(title: "Name Z-A")
-                    .storeValue(SortOption.nameDesc)
+                    .value(SortOption.nameDesc)
                 BoolNode(title: "Newest")
-                    .storeValue(SortOption.newest)
+                    .value(SortOption.newest)
                 BoolNode(title: "Oldest")
-                    .storeValue(SortOption.oldest)
+                    .value(SortOption.oldest)
             }
             .style(.inline)
             .assignId(ExampleIds.filterOptionsGroup)
@@ -41,7 +43,7 @@ struct BasicExampleView: View {
             .show(when: ExampleIds.showFilterOptions, meetsCondition: .selected)
         }
         .onStoreUpdated { store in
-            print(store.sortOption ?? "nil")
+            dump(store)
             return 0
         }
     }
