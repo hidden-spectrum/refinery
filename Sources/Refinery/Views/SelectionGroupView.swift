@@ -27,10 +27,8 @@ struct SelectionGroupView: View {
             switch selectionGroup.style {
             case .inline:
                 inlineGroup()
-            case .disclosure:
-                disclosureGroup()
-            default:
-                EmptyView()
+            case .menu:
+                menuGroup()
             }
         }
     }
@@ -41,18 +39,29 @@ struct SelectionGroupView: View {
     private func inlineGroup() -> some View {
         Section(selectionGroup.title) {
             ForEach(selectionGroup.boolChildren) { option in
-                boolNodeRow(with: option)
+                optionRow(with: option)
             }
         }
     }
     
     @ViewBuilder
-    private func disclosureGroup() -> some View {
-        Text("TBD")
+    private func menuGroup() -> some View {
+        Section(header: Text(selectionGroup.title).font(.caption)) {
+            Menu(selectionGroup.selectedChildren.first?.title ?? "Select") {
+                ForEach(selectionGroup.boolChildren) { node in
+                    Button {
+                        node.isSelected.toggle()
+                    } label: {
+                        optionView(for: node)
+                    }
+                }
+            }
+            .contentShape(Rectangle())
+        }
     }
     
     @ViewBuilder
-    private func boolNodeRow(with node: BoolNode) -> some View {
+    private func optionView(for node: BoolNode) -> some View {
         HStack {
             Text(node.title)
             Spacer()
@@ -61,10 +70,15 @@ struct SelectionGroupView: View {
                     .font(.caption)
             }
         }
-        .frame(minHeight: 24)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            node.isSelected.toggle()
-        }
+    }
+    
+    @ViewBuilder
+    private func optionRow(with node: BoolNode) -> some View {
+        optionView(for: node)
+            .frame(minHeight: 24)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                node.isSelected.toggle()
+            }
     }
 }

@@ -28,11 +28,8 @@ public final class SelectionGroup: RefineryNode {
     // MARK: Public
     
     public enum Style {
-        case grid(itemWidth: CGFloat)
         case inline
-        case scrolling
-        case list
-        case disclosure
+        case menu
     }
     
     public var selectedChildren: [BoolNode] {
@@ -58,7 +55,7 @@ public final class SelectionGroup: RefineryNode {
     
     // MARK: Private(set)
     
-    private(set) var style: Style = .disclosure
+    private(set) var style: Style = .inline
     
     // MARK: Private
     
