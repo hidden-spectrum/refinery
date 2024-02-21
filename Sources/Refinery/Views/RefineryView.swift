@@ -13,8 +13,7 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     @StateObject private var refinery: Refinery<Store>
     
-    @State var backgroundColor: Color?
-    @State var font: Font?
+    private let style: Style
     
     private var fullViewNodes: [RefineryNode] {
         refinery.root.children.filter { $0.shouldShowInFullView }
@@ -22,21 +21,10 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     // MARK: Lifecycle
     
-    public init(with refinery: Refinery<Store>, display: Binding<Bool>) {
+    public init(with refinery: Refinery<Store>, display: Binding<Bool>, style: Style = Style()) {
         self._refinery = StateObject(wrappedValue: refinery)
         self._display = display
-    }
-    
-    // MARK: View Configuration
-    
-    public func refineryBackgroundColor(_ color: Color) -> Self {
-        self.backgroundColor = color
-        return self
-    }
-    
-    public func refineryFont(_ font: Font) -> Self {
-        self.font = font
-        return self
+        self.style = style
     }
     
     // MARK: View
@@ -61,9 +49,9 @@ public struct RefineryView<Store: RefineryStore>: View {
                 }
             }
         }
-        .font(font)
+        .font(style.font)
         .scrollContentBackground(.hidden)
-        .background(backgroundColor)
+        .background(style.backgroundColor)
         .navigationTitle(refinery.root.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarContent(with: scrollProxy) }
@@ -78,12 +66,14 @@ public struct RefineryView<Store: RefineryStore>: View {
                     scrollProxy.scrollTo(refinery.root.children.first?.id, anchor: .top)
                 }
             }
+            .font(style.font)
         }
         ToolbarItem(placement: .navigationBarTrailing) {
             Button("Apply") {
                 refinery.apply()
                 display = false
             }
+            .font(style.font)
         }
     }
     
@@ -123,6 +113,24 @@ public struct RefineryView<Store: RefineryStore>: View {
 //                .padding(.vertical, 4)
         } else if let selectionGroup = node as? SelectionGroup {
             SelectionGroupView(for: selectionGroup)
+        }
+    }
+}
+
+public extension RefineryView {
+    
+     struct Style {
+        
+        // MARK: Internal
+        
+        let backgroundColor: Color?
+        let font: Font?
+        
+        // MARK: Lifecycle
+        
+        public init(backgroundColor: Color? = nil, font: Font? = nil) {
+            self.backgroundColor = backgroundColor
+            self.font = font
         }
     }
 }
