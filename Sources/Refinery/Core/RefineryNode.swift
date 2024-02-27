@@ -50,6 +50,9 @@ public class RefineryNode: ObservableObject, Identifiable {
         assertionFailure("hasSelections must be overridden in all subclasses")
         return false
     }
+    var isInInitialState: Bool {
+        children.allSatisfy { $0.isInInitialState }
+    }
     var quickFilterBarPosition: Int? {
         displayLocations.compactMap {
             if case .quickFilterBar(let index, _) = $0 {

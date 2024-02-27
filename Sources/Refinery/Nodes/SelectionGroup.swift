@@ -77,7 +77,15 @@ public final class SelectionGroup: RefineryNode {
         return self
     }
     
-    // MARK: Node Lifecycle
+    // MARK: RefineryNode
+    
+    override var hasValue: Bool {
+        !selectedChildren.isEmpty
+    }
+    
+    override var isInInitialState: Bool {
+        children.allSatisfy { $0.isInInitialState }
+    }
     
     override func setupObservers() {
         super.setupObservers()
@@ -96,12 +104,6 @@ public final class SelectionGroup: RefineryNode {
                 self.evaluateLinks()
             }
             .store(in: &cancellables)
-    }
-    
-    // MARK: Node Overrides
-    
-    override var hasValue: Bool {
-        !selectedChildren.isEmpty
     }
     
     override func updateValue<Store: RefineryStore>(in store: inout Store) {

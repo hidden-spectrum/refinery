@@ -24,6 +24,10 @@ public final class TextNode: RefineryNode {
         !text.isEmpty
     }
     
+    override var isInInitialState: Bool {
+        !hasValue
+    }
+    
     override func setupObservers() {
         super.setupObservers()
         $text

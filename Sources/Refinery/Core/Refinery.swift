@@ -22,6 +22,9 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
     @Published var estimatedItemsCount: Int?
     @Published var root: RefineryNode
     
+    var isInInitialState: Bool {
+        root.isInInitialState
+    }
     var showSeeResultsButton: Bool {
         storeUpdatedHandler != nil
     }

@@ -33,6 +33,10 @@ public final class BoolNode: RefineryNode {
     
     // MARK: RefineryNode
     
+    override var isInInitialState: Bool {
+        initialState == isSelected
+    }
+    
     override func setupObservers() {
         super.setupObservers()
         

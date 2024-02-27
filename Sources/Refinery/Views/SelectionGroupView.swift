@@ -12,6 +12,10 @@ struct SelectionGroupView: View {
     @StateObject private var selectionGroup: SelectionGroup
     
     private let context: DisplayContext
+    
+    private var displayTitle: String {
+        selectionGroup.selectedChildren.first?.title ?? "Select"
+    }
 
     // MARK: Lifecycle
 
@@ -47,7 +51,7 @@ struct SelectionGroupView: View {
     @ViewBuilder
     private func menuGroup() -> some View {
         Section(header: Text(selectionGroup.title).font(.caption)) {
-            Menu(selectionGroup.selectedChildren.first?.title ?? "Select") {
+            Menu {
                 ForEach(selectionGroup.boolChildren) { node in
                     Button {
                         node.isSelected.toggle()
@@ -55,8 +59,10 @@ struct SelectionGroupView: View {
                         optionView(for: node)
                     }
                 }
+            } label: {
+                Text(displayTitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .contentShape(Rectangle())
         }
     }
     

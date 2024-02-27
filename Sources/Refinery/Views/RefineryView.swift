@@ -15,6 +15,9 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     private let style: Style
     
+    private var actionButtonTitle: String {
+        refinery.isInInitialState ? "Cancel" : "Apply"
+    }
     private var fullViewNodes: [RefineryNode] {
         refinery.root.children.filter { $0.shouldShowInFullView }
     }
@@ -35,6 +38,7 @@ public struct RefineryView<Store: RefineryStore>: View {
                 ScrollViewReader { scrollProxy in
                     nodeList(with: scrollProxy)
                 }
+                .ignoresSafeArea(edges: .bottom)
             }
             seeResultsButton()
         }
@@ -67,9 +71,10 @@ public struct RefineryView<Store: RefineryStore>: View {
                 }
             }
             .font(style.font)
+            .disabled(refinery.isInInitialState)
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-            Button("Apply") {
+            Button(actionButtonTitle) {
                 refinery.apply()
                 display = false
             }
@@ -105,12 +110,6 @@ public struct RefineryView<Store: RefineryStore>: View {
             BoolNodeView(with: boolNode)
         } else if let textNode = node as? TextNode {
             TextNodeView(with: textNode)
-//        } else if let rangeFilter = node as? ValueFilter {
-//            ValueFilterView(node: rangeFilter, surface: .advanced)
-//                .padding(.vertical, 4)
-//        } else if let rangeFilter = node as? RangeFilter {
-//            RangeFilterView(node: rangeFilter, surface: .advanced)
-//                .padding(.vertical, 4)
         } else if let selectionGroup = node as? SelectionGroup {
             SelectionGroupView(for: selectionGroup)
         }
