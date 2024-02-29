@@ -28,17 +28,6 @@ public final class TextNode: RefineryNode {
         !hasValue
     }
     
-    override func setupObservers() {
-        super.setupObservers()
-        $text
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [unowned self] _ in
-                findRoot().evaluateAllLinks()
-            }
-            .store(in: &cancellables)
-    }
-    
     override func updateValue<Store>(in store: inout Store) where Store: RefineryStore {
         guard let storeKeyPath else {
             return

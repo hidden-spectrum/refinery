@@ -54,6 +54,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
         root.migrateLinks()
         root.evaluateAllLinks()
         root.objectWillChange
+            .receive(on: DispatchQueue.main)
             .sink { [unowned self] in
                 self.objectWillChange.send()
                 updateStore()
@@ -115,7 +116,7 @@ public final class Refinery<Store: RefineryStore>: ObservableObject {
         }
     }
     
-    func reset() {
+    public func reset() {
         root.children.forEach { $0.reset() }
         if storeUpdatedHandler == nil {
             apply()   
