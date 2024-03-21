@@ -15,6 +15,7 @@ public final class TextNode: RefineryNode {
     
     // MARK: Internal
     
+    @Published var searchCompleted: Bool = false
     @Published var searchResults: [String] = []
     @Published var text: String = ""
     
@@ -70,6 +71,9 @@ public final class TextNode: RefineryNode {
     
     @MainActor
     func search(query: String) async {
+        if searchCompleted {
+            return
+        }
         if query.isEmpty {
             searchResults = []
             return

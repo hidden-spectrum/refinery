@@ -11,8 +11,6 @@ struct TextNodeView: View {
     
     @StateObject var node: TextNode
     
-    @State var searchCompleted: Bool = false
-    
     // MARK: Lifecycle
     
     init(with node: TextNode) {
@@ -29,7 +27,7 @@ struct TextNodeView: View {
             VStack {
                 TextField(node.title, text: $node.text)
                     .autocorrectionDisabled()
-                    .disabled(searchCompleted)
+                    .disabled(node.searchCompleted)
                     .overlay(alignment: .trailing) {
                         clearButton()
                             .disabled(false)
@@ -49,7 +47,7 @@ struct TextNodeView: View {
         if !node.text.isEmpty {
             Button {
                 node.text = ""
-                searchCompleted = false
+                node.searchCompleted = false
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.secondary)
@@ -59,13 +57,13 @@ struct TextNodeView: View {
     
     @ViewBuilder
     private func searchResults() -> some View {
-        if !searchCompleted && !node.text.isEmpty && !node.searchResults.isEmpty {
+        if !node.searchCompleted && !node.text.isEmpty && !node.searchResults.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(node.searchResults, id: \.self) { result in
                     Divider()
                         .foregroundColor(.blue)
                     Button {
-                        searchCompleted = true
+                        node.searchCompleted = true
                         node.text = result
                     } label: {
                         Text(result)
