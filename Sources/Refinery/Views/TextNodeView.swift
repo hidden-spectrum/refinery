@@ -42,21 +42,25 @@ struct TextNodeView: View {
             .background(Color.white)
             .cornerRadius(8)
         }
-//        .onReceive(
-//            node.textPublisher
-//                .removeDuplicates()
-//                .debounce(for: 0.25, scheduler: DispatchQueue.main)
-//        ) { _ in
-//            Task { await node.searchHandler?(node.text) }
-//        }
-        .onChange(of: node.text) { newValue in
+        .onReceive(
+            node.textPublisher
+                .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
+        ) { _ in
+            guard !searchCompleted else {
+                return
+            }
             Task {
-                guard !searchCompleted else {
-                    return
-                }
-                await node.search(with: newValue)
+                await node.search(query: node.text)
             }
         }
+//        .onChange(of: node.text) { newValue in
+//            Task {
+//                guard !searchCompleted else {
+//                    return
+//                }
+//                await node.search(query: newValue)
+//            }
+//        }
     }
     
     @ViewBuilder

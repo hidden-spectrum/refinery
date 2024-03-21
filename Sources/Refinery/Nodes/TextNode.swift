@@ -28,6 +28,13 @@ public final class TextNode: RefineryNode {
     
     public init(_ title: String) {
         super.init(title: title)
+        $text
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [unowned self] in
+                self.textPublisher.send($0)
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: RefineryNode
@@ -59,7 +66,7 @@ public final class TextNode: RefineryNode {
         return self
     }
     
-    func search(with query: String) async {
+    func search(query: String) async {
         if query.isEmpty {
             withAnimation {
                 searchResults = []
