@@ -71,13 +71,13 @@ public final class TextNode: RefineryNode {
     
     func search(query: String) async {
         if query.isEmpty {
-            withAnimation {
+//            withAnimation {
                 searchResults = []
-            }
+//            }
         }
         let results = await searchHandler?(query) ?? []
-        withAnimation {
+//        withAnimation {
             searchResults = results
-        }
+//        }
     }
 }
