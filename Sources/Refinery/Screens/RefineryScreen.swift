@@ -5,7 +5,7 @@
 import SwiftUI
 
 
-public struct RefineryView<Store: RefineryStore>: View {
+public struct RefineryScreen<Store: RefineryStore>: View {
     
     // MARK: Private
     
@@ -46,14 +46,16 @@ public struct RefineryView<Store: RefineryStore>: View {
     
     @ViewBuilder
     private func nodeList(with scrollProxy: ScrollViewProxy) -> some View {
-        Form {
+        VStack(spacing: 16) {
             ForEach(fullViewNodes) { node in
                 if node.isVisible {
                     buildView(for: node)
                 }
             }
         }
+        .padding()
         .font(style.font)
+        .frame(maxHeight: .infinity, alignment: .top)
         .scrollContentBackground(.hidden)
         .background(style.backgroundColor)
         .navigationTitle(refinery.root.title)
@@ -116,7 +118,7 @@ public struct RefineryView<Store: RefineryStore>: View {
     }
 }
 
-public extension RefineryView {
+public extension RefineryScreen {
     
      struct Style {
         

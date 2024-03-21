@@ -2,15 +2,27 @@
 //  Copyright © 2024 Hidden Spectrum, LLC.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
 
 public final class TextNode: RefineryNode {
     
+    // MARK: Public
+    
+    public typealias SearchHandler = (String) async -> [String]
+    
     // MARK: Internal
     
+    @Published var searchResults: [String] = []
     @Published var text: String = ""
+    
+    let textPublisher = PassthroughSubject<String, Never>()
+    
+    // MARK: Private
+    
+    private var searchHandler: SearchHandler?
     
     // MARK: Lifecycle
     
@@ -38,5 +50,24 @@ public final class TextNode: RefineryNode {
     
     override func reset() {
         text = ""
+    }
+    
+    // MARK: Search
+    
+    public func searchable(handler searchHandler: @escaping SearchHandler) -> Self {
+        self.searchHandler = searchHandler
+        return self
+    }
+    
+    func search(with query: String) async {
+        if query.isEmpty {
+            withAnimation {
+                searchResults = []
+            }
+        }
+        let results = await searchHandler?(query) ?? []
+        withAnimation {
+            searchResults = results
+        }
     }
 }

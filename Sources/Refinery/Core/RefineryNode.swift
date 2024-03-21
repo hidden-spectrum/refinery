@@ -7,6 +7,7 @@ import Foundation
 import os.log
 
 
+@MainActor
 public class RefineryNode: ObservableObject, Identifiable {
     
     // MARK: Public
@@ -27,7 +28,9 @@ public class RefineryNode: ObservableObject, Identifiable {
     
     public typealias StoreUpdatedClosure = (() async -> Int?)
     
-    public var id: Int = UUID().hashValue
+    // MARK: Public private(set)
+    
+    public private(set) var id: Int = UUID().hashValue
     
     // MARK: Internal
     

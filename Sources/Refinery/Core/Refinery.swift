@@ -6,6 +6,7 @@ import Combine
 import SwiftUI
 
 
+@MainActor
 public final class Refinery<Store: RefineryStore>: ObservableObject {
     
     // MARK: Public
