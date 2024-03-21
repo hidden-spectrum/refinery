@@ -30,9 +30,12 @@ public final class TextNode: RefineryNode {
         super.init(title: title)
         $text
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [unowned self] in
-                self.textPublisher.send($0)
+//            .receive(on: DispatchQueue.main)
+            .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
+            .sink { [unowned self] query in
+                Task { @MainActor in
+                    await self.search(query: query)
+                }
             }
             .store(in: &cancellables)
     }

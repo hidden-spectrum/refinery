@@ -42,25 +42,6 @@ struct TextNodeView: View {
             .background(Color.white)
             .cornerRadius(8)
         }
-        .onReceive(
-            node.textPublisher
-                .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
-        ) { _ in
-            guard !searchCompleted else {
-                return
-            }
-            Task {
-                await node.search(query: node.text)
-            }
-        }
-//        .onChange(of: node.text) { newValue in
-//            Task {
-//                guard !searchCompleted else {
-//                    return
-//                }
-//                await node.search(query: newValue)
-//            }
-//        }
     }
     
     @ViewBuilder
