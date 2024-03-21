@@ -7,7 +7,6 @@ import Foundation
 import os.log
 
 
-@MainActor
 public class RefineryNode: ObservableObject, Identifiable {
     
     // MARK: Public

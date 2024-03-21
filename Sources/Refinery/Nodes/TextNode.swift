@@ -30,8 +30,7 @@ public final class TextNode: RefineryNode {
         super.init(title: title)
         $text
             .removeDuplicates()
-//            .receive(on: DispatchQueue.main)
-            .debounce(for: .seconds(2), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
             .sink { [unowned self] query in
                 Task { @MainActor in
                     await self.search(query: query)
@@ -69,15 +68,13 @@ public final class TextNode: RefineryNode {
         return self
     }
     
+    @MainActor
     func search(query: String) async {
         if query.isEmpty {
-//            withAnimation {
-                searchResults = []
-//            }
+            searchResults = []
+            return
         }
         let results = await searchHandler?(query) ?? []
-//        withAnimation {
-            searchResults = results
-//        }
+        searchResults = results
     }
 }
