@@ -27,7 +27,7 @@ struct TextNodeView: View {
             VStack {
                 TextField(node.title, text: $node.text)
                     .autocorrectionDisabled()
-                    .disabled(node.searchCompleted)
+                    .disabled(node.searchResultSelected)
                     .overlay(alignment: .trailing) {
                         clearButton()
                             .disabled(false)
@@ -46,8 +46,7 @@ struct TextNodeView: View {
     private func clearButton() -> some View {
         if !node.text.isEmpty {
             Button {
-                node.text = ""
-                node.searchCompleted = false
+                node.clear()
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.secondary)
@@ -57,20 +56,29 @@ struct TextNodeView: View {
     
     @ViewBuilder
     private func searchResults() -> some View {
-        if !node.searchCompleted && !node.text.isEmpty && !node.searchResults.isEmpty {
+        if !node.searchResultSelected && node.searchResultsFetched {
             VStack(alignment: .leading, spacing: 12) {
-                ForEach(node.searchResults, id: \.self) { result in
-                    Divider()
-                        .foregroundColor(.blue)
-                    Button {
-                        node.searchCompleted = true
-                        node.text = result
-                    } label: {
-                        Text(result)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                if node.searchResults.isEmpty {
+                    Text("No results found")
+                } else {
+                    ForEach(node.searchResults, id: \.self) { organizationName in
+                        searchResultRow(with: organizationName)
                     }
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func searchResultRow(with text: String) -> some View {
+        Divider()
+        Button {
+            node.searchResultSelected = true
+            node.text = text
+        } label: {
+            Text(text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
         }
     }
 }

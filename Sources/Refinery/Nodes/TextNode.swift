@@ -15,7 +15,8 @@ public final class TextNode: RefineryNode {
     
     // MARK: Internal
     
-    @Published var searchCompleted: Bool = false
+    @Published var searchResultsFetched: Bool = false
+    @Published var searchResultSelected: Bool = false
     @Published var searchResults: [String] = []
     @Published var text: String = ""
     
@@ -31,7 +32,7 @@ public final class TextNode: RefineryNode {
         super.init(title: title)
         $text
             .removeDuplicates()
-            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .debounce(for: .seconds(0.25), scheduler: RunLoop.main)
             .sink { [unowned self] query in
                 Task { @MainActor in
                     await self.search(query: query)
@@ -69,16 +70,25 @@ public final class TextNode: RefineryNode {
         return self
     }
     
+    func clear() {
+        text = ""
+        searchResultsFetched = false
+        searchResultSelected = false
+        searchResults = []
+    }
+    
     @MainActor
     func search(query: String) async {
-        if searchCompleted {
+        if searchResultSelected {
             return
         }
         if query.isEmpty {
             searchResults = []
+            searchResultsFetched = false
             return
         }
         let results = await searchHandler?(query) ?? []
-        searchResults = results
+        searchResults = Array(results.prefix(5))
+        searchResultsFetched = true
     }
 }

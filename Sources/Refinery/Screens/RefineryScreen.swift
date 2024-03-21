@@ -35,13 +35,24 @@ public struct RefineryScreen<Store: RefineryStore>: View {
     public var body: some View {
         VStack(spacing: 0) {
             NavigationView {
-                ScrollViewReader { scrollProxy in
-                    nodeList(with: scrollProxy)
-                }
-                .ignoresSafeArea(edges: .bottom)
+                content()
+                    .navigationTitle(refinery.root.title)
+                    .navigationBarTitleDisplayMode(.inline)
             }
             seeResultsButton()
         }
+    }
+    
+    @ViewBuilder
+    private func content() -> some View {
+        ScrollViewReader { scrollProxy in
+            ScrollView {
+                nodeList(with: scrollProxy)
+            }
+            .scrollContentBackground(.hidden)
+            .background(style.backgroundColor)
+        }
+        .ignoresSafeArea(edges: .bottom)
     }
     
     @ViewBuilder
@@ -56,10 +67,6 @@ public struct RefineryScreen<Store: RefineryStore>: View {
         .padding()
         .font(style.font)
         .frame(maxHeight: .infinity, alignment: .top)
-        .scrollContentBackground(.hidden)
-        .background(style.backgroundColor)
-        .navigationTitle(refinery.root.title)
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarContent(with: scrollProxy) }
     }
     
