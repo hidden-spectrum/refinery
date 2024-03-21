@@ -27,13 +27,22 @@ struct SelectionGroupView: View {
     // MARK: View
     
     var body: some View {
-        Group {
-            switch selectionGroup.style {
-            case .inline:
-                inlineGroup()
-            case .menu:
-                menuGroup()
+        VStack(alignment: .leading) {
+            Text(selectionGroup.title.uppercased())
+                .font(.caption)
+                .offset(x: 16)
+            Group {
+                switch selectionGroup.style {
+                case .inline:
+                    inlineGroup()
+                case .menu:
+                    menuGroup()
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color.white)
+            .cornerRadius(8)    
         }
     }
     
@@ -41,28 +50,24 @@ struct SelectionGroupView: View {
     
     @ViewBuilder
     private func inlineGroup() -> some View {
-        Section(selectionGroup.title) {
-            ForEach(selectionGroup.boolChildren) { option in
-                optionRow(with: option)
-            }
+        ForEach(selectionGroup.boolChildren) { option in
+            optionRow(with: option)
         }
     }
     
     @ViewBuilder
     private func menuGroup() -> some View {
-        Section(header: Text(selectionGroup.title).font(.caption)) {
-            Menu {
-                ForEach(selectionGroup.boolChildren) { node in
-                    Button {
-                        node.isSelected.toggle()
-                    } label: {
-                        optionView(for: node)
-                    }
+        Menu {
+            ForEach(selectionGroup.boolChildren) { node in
+                Button {
+                    node.isSelected.toggle()
+                } label: {
+                    optionView(for: node)
                 }
-            } label: {
-                Text(displayTitle)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
+        } label: {
+            Text(displayTitle)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
     

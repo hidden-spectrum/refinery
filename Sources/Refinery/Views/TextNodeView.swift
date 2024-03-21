@@ -11,7 +11,7 @@ struct TextNodeView: View {
     
     @StateObject var node: TextNode
     
-    @State var showResults: Bool = false
+    @State var searchCompleted: Bool = false
     
     // MARK: Lifecycle
     
@@ -29,8 +29,10 @@ struct TextNodeView: View {
             VStack {
                 TextField(node.title, text: $node.text)
                     .autocorrectionDisabled()
+                    .disabled(searchCompleted)
                     .overlay(alignment: .trailing) {
                         clearButton()
+                            .disabled(false)
                     }
                     .frame(maxWidth: .infinity)
                 searchResults()
@@ -49,8 +51,10 @@ struct TextNodeView: View {
 //        }
         .onChange(of: node.text) { newValue in
             Task {
+                guard !searchCompleted else {
+                    return
+                }
                 await node.search(with: newValue)
-                showResults = true
             }
         }
     }
@@ -60,6 +64,7 @@ struct TextNodeView: View {
         if !node.text.isEmpty {
             Button {
                 node.text = ""
+                searchCompleted = false
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.secondary)
@@ -69,13 +74,18 @@ struct TextNodeView: View {
     
     @ViewBuilder
     private func searchResults() -> some View {
-        if !node.text.isEmpty && !node.searchResults.isEmpty {
+        if !searchCompleted && !node.text.isEmpty && !node.searchResults.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
                 ForEach(node.searchResults, id: \.self) { result in
                     Divider()
                         .foregroundColor(.blue)
-                    Text(result)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button {
+                        searchCompleted = true
+                        node.text = result
+                    } label: {
+                        Text(result)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
         }
