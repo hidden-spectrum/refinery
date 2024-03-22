@@ -7,9 +7,11 @@ import SwiftUI
 
 struct TextNodeView: View {
     
-    // MARK: Internal
+    // MARK: Private
     
-    @StateObject var node: TextNode
+    @Environment(\.style) var style
+    
+    @StateObject private var node: TextNode
     
     // MARK: Lifecycle
     
@@ -20,9 +22,9 @@ struct TextNodeView: View {
     // MARK: View
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(node.title.uppercased())
-                .font(.caption)
+                .font(style.captionFont)
                 .offset(x: 16)
             VStack {
                 TextField(node.title, text: $node.text)
@@ -31,13 +33,14 @@ struct TextNodeView: View {
                     .overlay(alignment: .trailing) {
                         clearButton()
                             .disabled(false)
+                            .offset(x: 4)
                     }
                     .frame(maxWidth: .infinity)
                 searchResults()
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(Color.white)
+            .background(style.fieldBackgroundColor)
             .cornerRadius(8)
         }
     }

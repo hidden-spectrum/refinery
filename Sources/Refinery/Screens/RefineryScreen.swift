@@ -13,7 +13,7 @@ public struct RefineryScreen<Store: RefineryStore>: View {
     
     @StateObject private var refinery: Refinery<Store>
     
-    private let style: Style
+    let style: RefineryStyle
     
     private var actionButtonTitle: String {
         refinery.isInInitialState ? "Cancel" : "Apply"
@@ -24,7 +24,7 @@ public struct RefineryScreen<Store: RefineryStore>: View {
     
     // MARK: Lifecycle
     
-    public init(with refinery: Refinery<Store>, display: Binding<Bool>, style: Style = Style()) {
+    public init(with refinery: Refinery<Store>, display: Binding<Bool>, style: RefineryStyle = .init()) {
         self._refinery = StateObject(wrappedValue: refinery)
         self._display = display
         self.style = style
@@ -41,6 +41,8 @@ public struct RefineryScreen<Store: RefineryStore>: View {
             }
             seeResultsButton()
         }
+        .environment(\.style, style)
+        .font(style.bodyFont)
     }
     
     @ViewBuilder
@@ -65,7 +67,7 @@ public struct RefineryScreen<Store: RefineryStore>: View {
             }
         }
         .padding()
-        .font(style.font)
+        .font(style.bodyFont)
         .frame(maxHeight: .infinity, alignment: .top)
         .toolbar { toolbarContent(with: scrollProxy) }
     }
@@ -79,7 +81,7 @@ public struct RefineryScreen<Store: RefineryStore>: View {
                     scrollProxy.scrollTo(refinery.root.children.first?.id, anchor: .top)
                 }
             }
-            .font(style.font)
+            .font(style.bodyFont)
             .disabled(refinery.isInInitialState)
         }
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -87,7 +89,7 @@ public struct RefineryScreen<Store: RefineryStore>: View {
                 refinery.apply()
                 display = false
             }
-            .font(style.font)
+            .font(style.bodyFont)
         }
     }
     
@@ -121,24 +123,6 @@ public struct RefineryScreen<Store: RefineryStore>: View {
             TextNodeView(with: textNode)
         } else if let selectionGroup = node as? SelectionGroup {
             SelectionGroupView(for: selectionGroup)
-        }
-    }
-}
-
-public extension RefineryScreen {
-    
-     struct Style {
-        
-        // MARK: Internal
-        
-        let backgroundColor: Color?
-        let font: Font?
-        
-        // MARK: Lifecycle
-        
-        public init(backgroundColor: Color? = nil, font: Font? = nil) {
-            self.backgroundColor = backgroundColor
-            self.font = font
         }
     }
 }

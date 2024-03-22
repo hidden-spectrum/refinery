@@ -79,6 +79,10 @@ public final class TextNode: RefineryNode {
     
     @MainActor
     func search(query: String) async {
+        guard let searchHandler else {
+            return
+        }
+        
         if searchResultSelected {
             return
         }
@@ -87,7 +91,7 @@ public final class TextNode: RefineryNode {
             searchResultsFetched = false
             return
         }
-        let results = await searchHandler?(query) ?? []
+        let results = await searchHandler(query)
         searchResults = Array(results.prefix(5))
         searchResultsFetched = true
     }

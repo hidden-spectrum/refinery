@@ -9,6 +9,8 @@ struct SelectionGroupView: View {
 
     // MARK: Private
     
+    @Environment(\.style) private var style
+    
     @StateObject private var selectionGroup: SelectionGroup
     
     private let context: DisplayContext
@@ -27,9 +29,9 @@ struct SelectionGroupView: View {
     // MARK: View
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(selectionGroup.title.uppercased())
-                .font(.caption)
+                .font(style.captionFont)
                 .offset(x: 16)
             Group {
                 switch selectionGroup.style {
@@ -41,7 +43,7 @@ struct SelectionGroupView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(Color.white)
+            .background(style.fieldBackgroundColor)
             .cornerRadius(8)    
         }
     }
