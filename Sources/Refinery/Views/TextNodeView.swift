@@ -5,7 +5,7 @@
 import SwiftUI
 
 
-struct TextNodeView: View {
+struct TextNodeView<Content: View>: View {
     
     // MARK: Private
     
@@ -13,10 +13,17 @@ struct TextNodeView: View {
     
     @StateObject private var node: TextNode
     
+    typealias LowerContent = () -> Content
+    
+    private let disabled: Bool
+    private let lowerContent: LowerContent
+    
     // MARK: Lifecycle
     
-    init(with node: TextNode) {
+    init(with node: TextNode, disabled: Bool, @ViewBuilder lowerContent: @escaping LowerContent = { EmptyView() }) {
         _node = StateObject(wrappedValue: node)
+        self.disabled = disabled
+        self.lowerContent = lowerContent
     }
     
     // MARK: View
@@ -29,14 +36,14 @@ struct TextNodeView: View {
             VStack {
                 TextField(node.title, text: $node.text)
                     .autocorrectionDisabled()
-                    .disabled(node.searchResultSelected)
+                    .disabled(disabled)
                     .overlay(alignment: .trailing) {
                         clearButton()
                             .disabled(false)
                             .offset(x: 4)
                     }
                     .frame(maxWidth: .infinity)
-                searchResults()
+                lowerContent()
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
@@ -54,34 +61,6 @@ struct TextNodeView: View {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.secondary)
             }
-        }
-    }
-    
-    @ViewBuilder
-    private func searchResults() -> some View {
-        if !node.searchResultSelected && node.searchResultsFetched {
-            VStack(alignment: .leading, spacing: 12) {
-                if node.searchResults.isEmpty {
-                    Text("No results found")
-                } else {
-                    ForEach(node.searchResults, id: \.self) { organizationName in
-                        searchResultRow(with: organizationName)
-                    }
-                }
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func searchResultRow(with text: String) -> some View {
-        Divider()
-        Button {
-            node.searchResultSelected = true
-            node.text = text
-        } label: {
-            Text(text)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .multilineTextAlignment(.leading)
         }
     }
 }

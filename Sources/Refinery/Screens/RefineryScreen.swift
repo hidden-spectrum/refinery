@@ -119,8 +119,10 @@ public struct RefineryScreen<Store: RefineryStore>: View {
     private func buildView(for node: RefineryNode) -> some View {
         if let boolNode = node as? BoolNode {
             BoolNodeView(with: boolNode)
+        } else if let searchableTextNode = node as? SearchableTextNode {
+            SearchableTextNodeView(with: searchableTextNode)
         } else if let textNode = node as? TextNode {
-            TextNodeView(with: textNode)
+            TextNodeView(with: textNode, disabled: false)
         } else if let selectionGroup = node as? SelectionGroup {
             SelectionGroupView(for: selectionGroup)
         }
